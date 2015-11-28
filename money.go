@@ -124,6 +124,19 @@ type Money struct {
 	M int64 // value of the integer64 Money
 }
 
+func (m *Money) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var f float64
+
+	unmarshalErr := unmarshal(&f)
+	if unmarshalErr != nil {
+		return unmarshalErr
+	}
+
+	m.Setf(f)
+
+	return nil
+}
+
 // parsedTime is the struct representing a parsed time value.
 type parsedTime struct {
 	Year                 int
