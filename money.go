@@ -1,120 +1,121 @@
 package money
+
 /*
 
-The package contains type Money... 
+The package contains type Money...
 
 type Money struct {
 	M	int64
 }
 
 
-...which usese a fixed-length guard for precision arithmetic: the 
+...which usese a fixed-length guard for precision arithmetic: the
 int64 variable Guard (and its float64 and int-related variables Guardf
 and Guardi.
 
-ROunding is done on float64 to int64 by	the Rnd() function truncating 
-at values less than (.5 + (1 / Guardf))	or greater than -(.5 + (1 / Guardf)) 
-in the case of negative numbers. The Guard adds four decimal places 
+ROunding is done on float64 to int64 by	the Rnd() function truncating
+at values less than (.5 + (1 / Guardf))	or greater than -(.5 + (1 / Guardf))
+in the case of negative numbers. The Guard adds four decimal places
 of protection to rounding.
 
 DP is the decimal precision, which can be changed in the DecimalPrecision()
 function.  DP hold the places after the decimalplace in teh active money struct field M
 
-The following functions are available 
+The following functions are available
 
 Abs Returns the absolute value of Money
-	(m *Money) Abs() *Money 
+	(m *Money) Abs() *Money
 Add Adds two Money types
-	(m *Money) Add(n *Money) *Money 
+	(m *Money) Add(n *Money) *Money
 Black-Scholes (European put and call options)
-	BS(s, k, t, r, v float64, putcall string) float64 
+	BS(s, k, t, r, v float64, putcall string) float64
 CMP Compounded Interest Rate
-	CMP(fv, pv *Money, n float64) float64 
-CNI Continuous Interest 
-	(pv *Money) CNI(r float64, n int) *Money 
+	CMP(fv, pv *Money, n float64) float64
+CNI Continuous Interest
+	(pv *Money) CNI(r float64, n int) *Money
 Cov Covariance
-	Cov(x, y []float64) float64 
+	Cov(x, y []float64) float64
 DecimalChange resets the package-wide decimal place (default is 2 decimal places)
-	DecimalChange(d int) 
+	DecimalChange(d int)
 Div Divides one Money type from another
-	(m *Money) Div(n *Money) *Money 
+	(m *Money) Div(n *Money) *Money
 FVA Future Value of an Annuity
-	(m *Money) FVA(r float64, n int) *Money 
-Future Value of a growing Annuity 
-	(pmt *Money) FVGA(r, g float64, n int) *Money 
+	(m *Money) FVA(r float64, n int) *Money
+Future Value of a growing Annuity
+	(pmt *Money) FVGA(r, g float64, n int) *Money
 FV Future Value (compound interest)
-	(m *Money) FV(r float64, n int) *Money 
-FVi Future Value Simple Interest 
-	(m *Money) FVi(r float64, n int) (m *Money) 
+	(m *Money) FV(r float64, n int) *Money
+FVi Future Value Simple Interest
+	(m *Money) FVi(r float64, n int) (m *Money)
 Gett gets value of money truncating after DP (see Value() for no truncation)
-	(m *Money) Gett() int64 
+	(m *Money) Gett() int64
 Get gets the float64 value of money (see Value() for int64)
-	(m *Money) Get() float64 
+	(m *Money) Get() float64
 GetQuote obtains a security quote
 	(q *Quote) GetQuote(t, e string) *Quote
-Interest 
-	(m *Money) Interest(r float64, n int) (m *Money) 
+Interest
+	(m *Money) Interest(r float64, n int) (m *Money)
 I Interest (of 1 value returned) for n periods
-	I(r float64, n int) float64 
-Ifl Interest (float64 arguments) 
-	Ifl(r, n float64) float64 
+	I(r float64, n int) float64
+Ifl Interest (float64 arguments)
+	Ifl(r, n float64) float64
 Is Simple Interest (also see Compounded Interest Rate)
-	(m *Money) Is(pv *Money) *Money 
-Mean Average 
-	Mean(a []float64) float64 
+	(m *Money) Is(pv *Money) *Money
+Mean Average
+	Mean(a []float64) float64
 MP Mortgage Payment
-	(m *Money) MP(r float64, n int) *Money 
+	(m *Money) MP(r float64, n int) *Money
 Mul Multiplies two Money types
-	(m *Money) Mul(n *Money) *Money 
+	(m *Money) Mul(n *Money) *Money
 Mulf Multiplies a Money with a float to return a money-stored type
-	(m *Money) Mulf(f float64) *Money 
+	(m *Money) Mulf(f float64) *Money
 Neg Returns the negative value of Money
-	(m *Money) Neg() *Money 
+	(m *Money) Neg() *Money
 Pow is the power of Money
-	(m *Money) Pow(r float64) *Money 
+	(m *Money) Pow(r float64) *Money
 Present Value of a Series of cash flows (using non integer time periods) general case
-	(m *Money) PV(fvs []Money, i []float64, ns []float64) *Money 
+	(m *Money) PV(fvs []Money, i []float64, ns []float64) *Money
 PVA Present Value of an Annuity (ordinary)
-	(m *Money) PVA(r float64, n int) *Money 
+	(m *Money) PVA(r float64, n int) *Money
 Present Value of an Annuity Due
-	(m *Money) PVAD(r float64, n int) *Money 
+	(m *Money) PVAD(r float64, n int) *Money
 PVf Present Value of a single future Value (using non integer period)
-	(m *Money) PVf(r, n float64) *Money 
+	(m *Money) PVf(r, n float64) *Money
 PVGA Present Value of a growing Annuity
-	(m *Money) PVGA(r, g float64, n int) *Money 
+	(m *Money) PVGA(r, g float64, n int) *Money
 PVGAD Present Value of a growing Annuity due (start of period)
-	(m *Money) PVGAD(r, g float64, n int) *Money 
+	(m *Money) PVGAD(r, g float64, n int) *Money
 PVi Present Value of a single future Value (using integer period)
-	(m *Money) PVi(r float64, n int) *Money 
+	(m *Money) PVi(r float64, n int) *Money
 PVP Present Value (of an integer period)
-	(m *Money) PVP(r float64, n, pd int) *Money 
-R Regression 
-	R(x, y []float64) (a, b, r float64) 
+	(m *Money) PVP(r float64, n, pd int) *Money
+R Regression
+	R(x, y []float64) (a, b, r float64)
 RND Rounds int64 remainder if greater than Round
-	Rnd(r int64, trunc float64) int64 
+	Rnd(r int64, trunc float64) int64
 SD Standard Deviation
-	SD(a []float64) float64 
+	SD(a []float64) float64
 SDs Standard Deviation of a sample
-	SDs(a []float64) float64 
+	SDs(a []float64) float64
 Set sets the Money field M
-	(m *Money) Set(x int64) *Money 
+	(m *Money) Set(x int64) *Money
 Setf sets a float 64 into a Money type for precision calculations
-	(m *Money) Setf(f float64) *Money 
+	(m *Money) Setf(f float64) *Money
 Sign returns the Sign of Money 1 if positive, -1 if negative
-	(m *Money) Sign() int 
+	(m *Money) Sign() int
 String for money type representation in basic monetary unit (DOLLARS CENTS)
-	(m *Money) String() string 
+	(m *Money) String() string
 Sub subtracts one Money type from another
-	(m *Money) Sub(n *Money) *Money 
+	(m *Money) Sub(n *Money) *Money
 Value returns in int64 the value of Money (also see Gett, See Get() for float64)
-	(m *Money) Value() int64 
+	(m *Money) Value() int64
 */
 
 import (
 	"fmt"
-	"net/http"
 	"io/ioutil"
 	"math"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -125,14 +126,14 @@ type Money struct {
 
 // parsedTime is the struct representing a parsed time value.
 type parsedTime struct {
-    		Year                 int
-    		Month                time.Month
-    		Day                  int
-    		Hour, Minute, Second int // 15:04:05 is 15, 4, 5.
-    		Nanosecond           int // Fractional second.
-    		Weekday              time.Weekday
-    		ZoneOffset           int    // seconds east of UTC, e.g. -7*60*60 for -0700
-    		Zone                 string // e.g., "MST"
+	Year                 int
+	Month                time.Month
+	Day                  int
+	Hour, Minute, Second int // 15:04:05 is 15, 4, 5.
+	Nanosecond           int // Fractional second.
+	Weekday              time.Weekday
+	ZoneOffset           int    // seconds east of UTC, e.g. -7*60*60 for -0700
+	Zone                 string // e.g., "MST"
 }
 
 type Quote struct {
@@ -147,12 +148,12 @@ type Quote struct {
 	Change    Money
 	ChangePct float64
 	CCOL      string
-	EL        Money // after hours
-	ELCurrent Money // after hours price
-	ELT       parsedTime   // after hours time
-	EC        Money // after hours price change
-	ECP       float64     // after hours percent change
-	ECCOL     string      // chb
+	EL        Money      // after hours
+	ELCurrent Money      // after hours price
+	ELT       parsedTime // after hours time
+	EC        Money      // after hours price change
+	ECP       float64    // after hours percent change
+	ECCOL     string     // chb
 	Dividend  Money
 	Yield     float64
 	Other     string // forecol
@@ -183,13 +184,13 @@ var (
 	Guardi int     = 100
 	Guard  int64   = int64(Guardi)
 	Guardf float64 = float64(Guardi)
-	DP     int64   = 100        // for default of 2 decimal places => 10^2 (can be reset)
+	DP     int64   = 100         // for default of 2 decimal places => 10^2 (can be reset)
 	DPf    float64 = float64(DP) // for default of 2 decimal places => 10^2 (can be reset)
-	Round  = .5 
-//	Round  = .5 + (1 / Guardf)
-	Roundn = Round * -1
-	call string = "c"
-	put  string = "p"
+	Round          = .5
+	//	Round  = .5 + (1 / Guardf)
+	Roundn        = Round * -1
+	call   string = "c"
+	put    string = "p"
 )
 
 const (
@@ -206,7 +207,7 @@ const (
 	MAXDEC  = 18
 )
 
-const (	// for GetQuote
+const ( // for GetQuote
 	DOUBLEQUOTE byte   = 34
 	COLONBYTE   byte   = 58
 	COLON       string = string(COLONBYTE)
@@ -248,7 +249,7 @@ func (m *Money) Add(n *Money) *Money {
 // r = risk free rate
 // v = volitilaty (sigma)
 // e math.E 2.7183
-// putcall = "c" for a call or "p" for a put 
+// putcall = "c" for a call or "p" for a put
 func BS(s, k, t, r, v float64, putcall string) float64 {
 	d1 := (math.Log(s/k) + ((r + (math.Pow(v, 2) / 2)) * t)) / (v * math.Sqrt(t))
 	d2 := d1 - (v * math.Sqrt(t))
@@ -264,7 +265,7 @@ func BS(s, k, t, r, v float64, putcall string) float64 {
 // CMP Compounded Interest Rate
 // i = (fv / pv) ^ (1/n) - 1
 // pv = present value
-// fv = future value 
+// fv = future value
 // n - number of periods
 // i = interest rate in percent per period
 // returned as a decimal representation of the interest rate over the period
@@ -273,7 +274,7 @@ func CMP(fv, pv *Money, n float64) float64 {
 	return Ifl(float64(fv.Div(pv).Get()), 1/n) - 1
 }
 
-// CNI Continuous Interest 
+// CNI Continuous Interest
 // fv = pv * e ^ (i * n)
 // pv - principal or present value
 // i - interest rate per period
@@ -324,14 +325,14 @@ func DecimalChange(d int) {
 
 // Div Divides one Money type from another
 func (m *Money) Div(n *Money) *Money {
- 	f := Guardf * DPf * float64(m.M) / float64(n.M) / Guardf
+	f := Guardf * DPf * float64(m.M) / float64(n.M) / Guardf
 	i := int64(f)
 	return m.Set(Rnd(i, f-float64(i)))
 }
 
 // FVA Future Value of an Annuity
-// fv = pmt * ( ( 1 + n )^n - 1 ) / r 
-// fv = future value 
+// fv = pmt * ( ( 1 + n )^n - 1 ) / r
+// fv = future value
 // pmt (m) = payment per period
 // r = interest rate in percent per period
 // n = number of periods
@@ -340,8 +341,8 @@ func (m *Money) FVA(r float64, n int) *Money {
 	return m.Mulf((I(r, n) - 1) / r)
 }
 
-// FVGA Future Value of a growing Annuity 
-// fv = pmt * ( (1+i)^n - (1+r)^n ) / (i - r) 
+// FVGA Future Value of a growing Annuity
+// fv = pmt * ( (1+i)^n - (1+r)^n ) / (i - r)
 //   when i = r, fv = pmt * n * ((1+i)^(n-1))
 // pmt (m) = amount of each payment
 // fv = Future Value
@@ -365,7 +366,7 @@ func (m *Money) FV(r float64, n int) *Money {
 	return m.Mulf(I(r, n))
 }
 
-// FVi Future Value Simple Interest 
+// FVi Future Value Simple Interest
 // fv = pv * (1 + ( i * n ) )
 // fv - future value (maturity value)
 // pv (m) - principal or present value
@@ -386,14 +387,14 @@ func (m *Money) Get() float64 {
 }
 
 // GetQuote obtains a security quote of type Quote
-// q = Quote 
+// q = Quote
 // t = the string ticker ex. "GOOG" "VTI"
 // e = the string exchange ex. "NASDAQ" "NYSE"
 func (q *Quote) GetQuote(t, e string) *Quote {
 	return q.parseQuote(getQuotePage(e, t))
 }
 
-// Interest 
+// Interest
 // I = pv * i * n
 // pv (m) - principal or present value
 // i - interest rate per period
@@ -411,7 +412,7 @@ func I(r float64, n int) float64 {
 	return math.Pow((1 + r), float64(n))
 }
 
-// Ifl Interest (float64 arguments) 
+// Ifl Interest (float64 arguments)
 // r PLUS - interest rate per period - use (1 + r), E for ln etc.
 // n - number of periods
 // returned as a decimal representation of the interest rate over the period
@@ -430,7 +431,7 @@ func (m *Money) Is(pv *Money) *Money {
 	return m.Sub(pv).Div(n.Set(100))
 }
 
-// Mean Average 
+// Mean Average
 // mean = SIGMA a / len(a)
 // SIGMA a total of all of the elements of a
 // len(a) = the number of values
@@ -451,7 +452,7 @@ func Mean(a []float64) float64 {
 // loan - loan amount
 // i - note percent interest rate (not monthly rate)
 // n - number of periods (ex 360 for a 30 year loan)
-// returned as Money 
+// returned as Money
 func (m *Money) MP(r float64, n int) *Money {
 	return m.Setf(m.Get() * r * I(r/12, n) / (I(r/12, n) - 1))
 }
@@ -464,8 +465,8 @@ func (m *Money) Mul(n *Money) *Money {
 // Mulf Multiplies a Money with a float to return a money-stored type
 func (m *Money) Mulf(f float64) *Money {
 	i := m.M * int64(f*Guardf*DPf)
-	r := i/Guard/DP
-	return m.Set(Rnd(r,float64(i) / Guardf / DPf - float64(r)))
+	r := i / Guard / DP
+	return m.Set(Rnd(r, float64(i)/Guardf/DPf-float64(r)))
 }
 
 // Neg Returns the negative value of Money
@@ -499,6 +500,7 @@ func (m *Money) PV(fvs []Money, i []float64, ns []float64) *Money {
 	}
 	return m
 }
+
 // PVA Present Value of an Annuity (ordinary)
 // pv = pmt * (1 - ( 1 / ((1+i)^n)) / i)
 // m = amount of each payment and solution returned
@@ -520,7 +522,7 @@ func (m *Money) PVAD(r float64, n int) *Money {
 // PVf Present Value of a single future Value (using non integer period)
 // pv = fv * ( 1 / ( 1 + r )^n)
 // pv = present value
-// fv = future value 
+// fv = future value
 // r = interest rate in percent for period
 // n = period
 // can panic on improbable input values if > -100% r or 1/2 period.
@@ -542,7 +544,7 @@ func (m *Money) PVGA(r, g float64, n int) *Money {
 
 // PVGAD Present Value of a growing Annuity due (start of period)
 // pv = pmt * (1 - ( (1+g) / ((1+r)^n)) / (r-g)) * (1+r)
-// pv = present value 
+// pv = present value
 // pmt = payment per period
 // r = interest rate in percent per period
 // n = number of periods
@@ -554,8 +556,8 @@ func (m *Money) PVGAD(r, g float64, n int) *Money {
 // PVi Present Value of a single future Value (using integer period)
 // pv = fv * ( 1 / ( 1 + r )^n)
 // pv = present value
-// fv = future value 
-// r = interest rate 
+// fv = future value
+// r = interest rate
 // n = period
 func (m *Money) PVi(r float64, n int) *Money {
 	return m.Mulf(1 / I(r, n))
@@ -564,14 +566,14 @@ func (m *Money) PVi(r float64, n int) *Money {
 // PVP Present Value (of an integer period)
 // pv = fv * ( 1 / ( 1 + i )^n)
 // pv = present value
-// fv = future value 
+// fv = future value
 // r = interest rate in percent per period
 // n = number of periods
 func (m *Money) PVP(r float64, n, pd int) *Money {
 	return m.Mulf(1 / Ifl((1+(r/float64(pd))), float64(n*pd)))
 }
 
-// R Regression 
+// R Regression
 // slope(b) = (n * SIGMAXY - (SIGMA X)(SIGMA Y))) / (n * SIGMAX^2) - (SIGMAX)^2)
 // Intercept(a) = (SIGMA Y - b(SIGMA X)) / n
 // r-squared = (Cov(x,y) / SD(x) * SD(y))^2
@@ -615,7 +617,7 @@ func R(x, y []float64) (a, b, r float64) {
 // r     = the result of the int64 cal
 func Rnd(r int64, trunc float64) int64 {
 
-//fmt.Printf("RND 1 r = % v, trunc = %v Round = %v\n", r, trunc, Round)
+	//fmt.Printf("RND 1 r = % v, trunc = %v Round = %v\n", r, trunc, Round)
 	if trunc > 0 {
 		if trunc >= Round {
 			r++
@@ -625,7 +627,7 @@ func Rnd(r int64, trunc float64) int64 {
 			r--
 		}
 	}
-//fmt.Printf("RND 2 r = % v, trunc = %v Round = %v\n", r, trunc, Round)
+	//fmt.Printf("RND 2 r = % v, trunc = %v Round = %v\n", r, trunc, Round)
 	return r
 }
 
@@ -666,7 +668,7 @@ func (m *Money) Set(x int64) *Money {
 // Setf sets a float64 into a Money type for precision calculations
 func (m *Money) Setf(f float64) *Money {
 	fDPf := f * DPf
-	r := int64(f*DPf)
+	r := int64(f * DPf)
 	return m.Set(Rnd(r, fDPf-float64(r)))
 }
 
@@ -702,17 +704,13 @@ func (m *Money) Value() int64 {
 
 func now() (t parsedTime) {
 	lt := time.Now().Local()
-	t.Year    = lt.Year()
-	t.Month   = lt.Month()
+	t.Year = lt.Year()
+	t.Month = lt.Month()
 	t.Weekday = lt.Weekday()
-	t.Day     = lt.Day()
-        t.Zone,_ = lt.Zone()
+	t.Day = lt.Day()
+	t.Zone, _ = lt.Zone()
 	return t
 }
-
-
-
-
 
 func (q *Quote) quoteFields(bKey, bVal []byte) *Quote {
 	if bVal == nil {
@@ -729,13 +727,13 @@ func (q *Quote) quoteFields(bKey, bVal []byte) *Quote {
 			case 2:
 				q.Exchange = string(bVal)
 			case 3:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.Price.Setf(f)
 			case 4:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
@@ -748,28 +746,28 @@ func (q *Quote) quoteFields(bKey, bVal []byte) *Quote {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.LTT = now()
-				q.LTT.Hour   = t.Hour()
+				q.LTT.Hour = t.Hour()
 				q.LTT.Minute = t.Minute()
-				q.LTT.Zone,_   = t.Zone()
+				q.LTT.Zone, _ = t.Zone()
 			case 7:
 				t, err := time.Parse(QLTTIME, string(bVal))
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.LT = now()
-				q.LT.Month  = t.Month()
-				q.LT.Day    = t.Day()
-				q.LT.Hour   = t.Hour()
+				q.LT.Month = t.Month()
+				q.LT.Day = t.Day()
+				q.LT.Hour = t.Hour()
 				q.LT.Minute = t.Minute()
-				q.LT.Zone,_   = t.Zone()
+				q.LT.Zone, _ = t.Zone()
 			case 8:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.Change.Setf(f)
 			case 9:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
@@ -777,13 +775,13 @@ func (q *Quote) quoteFields(bKey, bVal []byte) *Quote {
 			case 10:
 				q.CCOL = string(bVal)
 			case 11:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.EL.Setf(f)
 			case 12:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
@@ -794,19 +792,19 @@ func (q *Quote) quoteFields(bKey, bVal []byte) *Quote {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.ELT = now()
-				q.ELT.Month  = t.Month()
-				q.ELT.Day    = t.Day()
-				q.ELT.Hour   = t.Hour()
+				q.ELT.Month = t.Month()
+				q.ELT.Day = t.Day()
+				q.ELT.Hour = t.Hour()
 				q.ELT.Minute = t.Minute()
-				q.ELT.Zone,_ = t.Zone()
+				q.ELT.Zone, _ = t.Zone()
 			case 14:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
 				q.EC.Setf(f)
 			case 15:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + string(bVal))
 				}
@@ -814,13 +812,13 @@ func (q *Quote) quoteFields(bKey, bVal []byte) *Quote {
 			case 16:
 				q.ECCOL = string(bVal)
 			case 17:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + err.Error() + " " + string(bVal))
 				}
 				q.Dividend.Setf(f)
 			case 18:
-				f, err := strconv.ParseFloat(string(bVal),64)
+				f, err := strconv.ParseFloat(string(bVal), 64)
 				if err != nil {
 					panic(UNABLE + fld + " " + err.Error() + " " + string(bVal))
 				}
@@ -872,8 +870,8 @@ func (s *Quote) parseQuote(b []byte) *Quote {
 
 func getQuotePage(t, e string) []byte {
 	var b []byte
-//	r, _, err := http.Get(QUOTEURL + e + COLON + t)  // http.Get with re-direct
-	r, err := http.Get(QUOTEURL + e + COLON + t) 
+	//	r, _, err := http.Get(QUOTEURL + e + COLON + t)  // http.Get with re-direct
+	r, err := http.Get(QUOTEURL + e + COLON + t)
 	if err != nil {
 		panic(QUOTEFAIL + e + " " + t)
 	}
